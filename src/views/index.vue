@@ -2,6 +2,7 @@
 <div class="main">
     <div class="interaction rr-block">
         <el-button v-if="!showReplay" type="primary" @click="record">录制</el-button>
+        <el-button v-if="!showReplay" type="primary" @click="drawCanvas2D">draw</el-button>
         <el-button v-if="!showReplay" type="success" @click="replay">回放</el-button>
         <el-button v-if="showReplay" type="warning" @click="reset">返回演示</el-button>
     </div>
@@ -11,24 +12,28 @@
                 <el-form-item label="活动名称" prop="name">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="活动区域" prop="region">
-                    <el-select v-model="form.region" placeholder="请选择活动区域">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="活动时间">
-                    <el-col :span="11" prop="date1">
-                        <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
-                    </el-col>
-                    <el-col class="line" :span="2">-</el-col>
-                    <el-col :span="11" prop="date2">
-                        <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
-                    </el-col>
-                </el-form-item>
-                <el-form-item label="即时配送">
-                    <el-switch v-model="form.delivery"></el-switch>
-                </el-form-item>
+              <canvas id="test-canvas" width="200" heigth="100">
+                <p>你的浏览器不支持Canvas</p>
+              </canvas>
+              <iframe id="iframe2d" width="300" height="200" src="/draw2d.html"></iframe>
+<!--                <el-form-item label="活动区域" prop="region">-->
+<!--                    <el-select v-model="form.region" placeholder="请选择活动区域">-->
+<!--                        <el-option label="区域一" value="shanghai"></el-option>-->
+<!--                        <el-option label="区域二" value="beijing"></el-option>-->
+<!--                    </el-select>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="活动时间">-->
+<!--                    <el-col :span="11" prop="date1">-->
+<!--                        <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>-->
+<!--                    </el-col>-->
+<!--                    <el-col class="line" :span="2">-</el-col>-->
+<!--                    <el-col :span="11" prop="date2">-->
+<!--                        <el-time-picker placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>-->
+<!--                    </el-col>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="即时配送">-->
+<!--                    <el-switch v-model="form.delivery"></el-switch>-->
+<!--                </el-form-item>-->
                 <el-form-item label="活动性质" prop="type">
                     <el-checkbox-group v-model="form.type">
                         <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
@@ -37,15 +42,15 @@
                         <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
-                <el-form-item label="特殊资源" prop="resource">
-                    <el-radio-group v-model="form.resource">
-                        <el-radio label="线上品牌商赞助"></el-radio>
-                        <el-radio label="线下场地免费"></el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="活动形式" prop="desc">
-                    <el-input type="textarea" v-model="form.desc"></el-input>
-                </el-form-item>
+<!--                <el-form-item label="特殊资源" prop="resource">-->
+<!--                    <el-radio-group v-model="form.resource">-->
+<!--                        <el-radio label="线上品牌商赞助"></el-radio>-->
+<!--                        <el-radio label="线下场地免费"></el-radio>-->
+<!--                    </el-radio-group>-->
+<!--                </el-form-item>-->
+<!--                <el-form-item label="活动形式" prop="desc">-->
+<!--                    <el-input type="textarea" v-model="form.desc"></el-input>-->
+<!--                </el-form-item>-->
                 <el-form-item>
                     <el-button type="primary" @click="onSubmit">打印表单数据</el-button>
                     <el-button type="danger" @click="logError">手动抛错</el-button>
@@ -67,13 +72,13 @@ export default {
             showReplay: false,
             form: {
                 name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: false,
+                // region: '',
+                // date1: '',
+                // date2: '',
+                // delivery: false,
                 type: [],
-                resource: '',
-                desc: '',
+                // resource: '',
+                //desc: '',
             },
             formRules: {
                 name: [{
@@ -81,31 +86,31 @@ export default {
                     message: '请输入活动名称',
                     trigger: 'blur'
                 }, ],
-                region: [{
-                    required: true,
-                    message: '请选择活动区域',
-                    trigger: 'change'
-                }],
-                date1: [{
-                    required: true,
-                    message: '请选择日期',
-                    trigger: 'change'
-                }],
-                date2: [{
-                    required: true,
-                    message: '请选择时间',
-                    trigger: 'change'
-                }],
-                type: [{
-                    required: true,
-                    message: '请选择活动性质',
-                    trigger: 'change'
-                }],
-                resource: [{
-                    required: true,
-                    message: '请选择活动资源',
-                    trigger: 'change'
-                }],
+                // region: [{
+                //     required: true,
+                //     message: '请选择活动区域',
+                //     trigger: 'change'
+                // }],
+                // date1: [{
+                //     required: true,
+                //     message: '请选择日期',
+                //     trigger: 'change'
+                // }],
+                // date2: [{
+                //     required: true,
+                //     message: '请选择时间',
+                //     trigger: 'change'
+                // }],
+                // type: [{
+                //     required: true,
+                //     message: '请选择活动性质',
+                //     trigger: 'change'
+                // }],
+                // resource: [{
+                //     required: true,
+                //     message: '请选择活动资源',
+                //     trigger: 'change'
+                // }],
                 desc: [{
                     required: true,
                     message: '请填写活动形式',
@@ -117,6 +122,7 @@ export default {
     },
     methods: {
         onSubmit() {
+            rrweb.takeFullSnapshot(false);
             console.log(JSON.stringify(this.form))
         },
         logError() {
@@ -125,27 +131,46 @@ export default {
         record() {
             const self = this
             this.stopFn = rrweb.record({
-                checkoutEveryNth: 100, // 每 100 个 event 重新制作快照
+                //checkoutEveryNth: 100, // 每 100 个 event 重新制作快照
                 emit(event, isCheckout) {
                     // isCheckout 是一个标识，告诉你重新制作了快照
+                    //console.log('event', JSON.stringify(event));
                     if (isCheckout) {
                         self.eventsMatrix.push([]);
                     }
                     const lastEvents = self.eventsMatrix[self.eventsMatrix.length - 1];
                     lastEvents.push(event);
                 },
+                //recordCrossOriginIframes: true, // 启用 iframe 录制
+                recordCanvas: true,
+                sampling: {
+                  canvas: 15,
+                },
+                // 图像的格式
+                dataURLOptions: {
+                  type: 'image/webp',
+                  quality: 0.6,
+                },
                 // 定制的选项
-                plugins: [rrweb.getRecordConsolePlugin({
-                        level: ["info", "log", "warn", "error"],
-                        lengthThreshold: 10000,
-                        stringifyOptions: {
-                        stringLengthLimit: 1000,
-                        numOfKeysLimit: 100,
-                        depthOfLimit: 1
-                    },
-                    logger: window.console,
-                })],
+                // plugins: [rrweb.getRecordConsolePlugin({
+                //         level: ["info", "log", "warn", "error"],
+                //         lengthThreshold: 10000,
+                //         stringifyOptions: {
+                //         stringLengthLimit: 1000,
+                //         numOfKeysLimit: 100,
+                //         depthOfLimit: 1
+                //     },
+                //     logger: window.console,
+                // })],
             });
+
+            // window.addEventListener('message', function(event) {
+            //   if (event.data.type === 'iframeEvent') {
+            //     console.log('Iframe event:', JSON.stringify(event.data.data));
+            //     //rrweb.add(event.data.data)
+            //     self.eventsMatrix[self.eventsMatrix.length - 1].push(event.data.data);
+            //   }
+            // }, false);
         },
         replay() {
             console.log('最近的操作记录: ', JSON.stringify(this.eventsMatrix[this.eventsMatrix.length - 1]));
@@ -158,17 +183,38 @@ export default {
                 props: {
                     logConfig: true,
                     events: this.eventsMatrix[this.eventsMatrix.length - 1],
-                    plugins: [
-                        rrweb.getReplayConsolePlugin({
-                        level: ['info', 'log', 'warn', 'error'],
-                    }),
-                ],
+                    UNSAFE_replayCanvas: true,
+                    // plugins: [
+                    //     rrweb.getReplayConsolePlugin({
+                    //     level: ['info', 'log', 'warn', 'error'],
+                    //     }),
+                    // ],
                 },
             });
         },
         reset() {
             this.showReplay = false
             location.reload()
+        },
+        drawCanvas2D() {
+          let
+              canvas = document.getElementById('test-canvas'),
+              ctx = canvas.getContext('2d');
+
+          ctx.clearRect(0, 0, 200, 200); // 擦除(0,0)位置大小为200x200的矩形，擦除的意思是把该区域变为透明
+          ctx.fillStyle = '#dddddd'; // 设置颜色
+          ctx.fillRect(10, 10, 130, 130); // 把(10,10)位置大小为130x130的矩形涂色
+          // 利用Path绘制复杂路径:
+          let path=new Path2D();
+          path.arc(75, 75, 50, 0, Math.PI*2, true);
+          path.moveTo(110,75);
+          path.arc(75, 75, 35, 0, Math.PI, false);
+          path.moveTo(65, 65);
+          path.arc(60, 65, 5, 0, Math.PI*2, true);
+          path.moveTo(95, 65);
+          path.arc(90, 65, 5, 0, Math.PI*2, true);
+          ctx.strokeStyle = '#0000ff';
+          ctx.stroke(path);
         }
     }
 }

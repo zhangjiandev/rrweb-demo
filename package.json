@@ -10,8 +10,6 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "element-ui": "^2.15.6",
-    "rrweb": "^1.0.7",
-    "rrweb-player": "^0.7.9",
     "vue": "^2.6.11"
   },
   "devDependencies": {

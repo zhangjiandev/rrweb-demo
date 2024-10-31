@@ -64,6 +64,7 @@
 
 <script>
 const rrweb = require("rrweb")
+const mm = require('magic-mirror')
 import rrwebPlayer from 'rrweb-player'
 export default {
     data() {
@@ -129,6 +130,29 @@ export default {
             throw Error('模拟错误')
         },
         record() {
+          //   const mmRecord = new mm({
+          //     collectorServer: 'https://ys2.8268805.club/recallcollect-api', // 存证后台服务地址
+          //     proxyServer: 'https://ys2.8268805.club/recallstatic-api/proxy?url=', // 跨域时资源下 载代理服务地址
+          //     resourceServer: 'https://ys2.8268805.club/resources-api', // 替代图片下载服务地址
+          //     // collectorServer: 'http://127.0.0.1:80/recallcollect-api', // 存证后台服务地址
+          //     // collectorServer: 'http://127.0.0.1:8888', // 存证后台服务地址
+          //     // proxyServer:'http://127.0.0.1/recallstatic-api/proxy?url=', // 跨域时资源下载代理服务地址
+          //     // resourceServer: 'http://127.0.0.1/resources-api', // 替代图片下载服务地址
+          //     // collectorServer: 'http://49.232.146.118/recallcollect-api', // 存证后台服务地址
+          //     // proxyServer: 'http://49.232.146vnpm.118/recallstatic-api/proxy?url=', // 跨域时资源下载代理服务地址
+          //     // resourceServer: 'http://49.232.146.118/resources-api', // 替代图片下载服务地址
+          //     systemCode: "9504",
+          //     pageVersion: "1.1"
+          //   });
+          //
+          // mmRecord.init(
+          //     function() {
+          //       mmRecord.startVideo(function() {}, function() {})
+          //     },
+          //     //function() {},
+          //     //uuid2()
+          // );
+
             const self = this
             this.stopFn = rrweb.record({
                 //checkoutEveryNth: 100, // 每 100 个 event 重新制作快照

@@ -1,18 +1,30 @@
+<!--<template>-->
+<!--  <div id="app">-->
+<!--    <index msg="Welcome to Your Vue.js App"/>-->
+<!--  </div>-->
+<!--</template>-->
+
+<!--<script>-->
+<!--import index from './views/index.vue'-->
+
+<!--export default {-->
+<!--  name: 'App',-->
+<!--  components: {-->
+<!--    index-->
+<!--  }-->
+<!--}-->
+<!--</script>-->
+
 <template>
   <div id="app">
-    <index msg="Welcome to Your Vue.js App"/>
+    <router-view />
   </div>
 </template>
 
-<script>
-import index from './views/index.vue'
+<script lang="ts">
+import Vue from 'vue'
 
-export default {
-  name: 'App',
-  components: {
-    index
-  }
-}
+export default Vue.extend({})
 </script>
 
 <style>

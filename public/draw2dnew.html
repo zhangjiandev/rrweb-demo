@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态 Canvas 绘制</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #f5f5f5;
+        }
+        canvas {
+            border: 2px solid #333;
+            background: white;
+            touch-action: none; /* 防止触摸滚动 */
+        }
+        .controls {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="drawingCanvas"></canvas>
+
+<div class="controls">
+    <label>颜色:
+        <input type="color" id="colorPicker" value="#ff0000">
+    </label>
+    <label>粗细:
+        <input type="range" id="sizePicker" min="1" max="10" value="3">
+    </label>
+    <button id="clearCanvas">清空画布</button>
+</div>
+
+<script>
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 适配屏幕尺寸
+    function resizeCanvas() {
+        canvas.width = window.innerWidth * 0.9;
+        canvas.height = window.innerHeight * 0.7;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    let drawing = false;
+    let lastX = 0, lastY = 0;
+    let hue = document.getElementById('colorPicker').value;
+    let lineWidth = document.getElementById('sizePicker').value;
+
+    function startDrawing(e) {
+        drawing = true;
+        [lastX, lastY] = [e.offsetX || e.touches[0].clientX, e.offsetY || e.touches[0].clientY];
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        ctx.strokeStyle = hue;
+        ctx.lineWidth = lineWidth;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(e.offsetX || e.touches[0].clientX, e.offsetY || e.touches[0].clientY);
+        ctx.stroke();
+
+        [lastX, lastY] = [e.offsetX || e.touches[0].clientX, e.offsetY || e.touches[0].clientY];
+    }
+
+    function stopDrawing() {
+        drawing = false;
+    }
+
+    // 监听鼠标事件
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+
+    // 监听触摸事件
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startDrawing(e.touches[0]);
+    });
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        draw(e.touches[0]);
+    });
+    canvas.addEventListener('touchend', stopDrawing);
+
+    // 颜色 & 线条粗细
+    document.getElementById('colorPicker').addEventListener('input', (e) => {
+        hue = e.target.value;
+    });
+    document.getElementById('sizePicker').addEventListener('input', (e) => {
+        lineWidth = e.target.value;
+    });
+
+    // 清空画布
+    document.getElementById('clearCanvas').addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+</script>
+
+</body>
+</html>

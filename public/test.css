@@ -1,0 +1,16 @@
+.main1 {
+    padding: 20px;
+
+    .interaction {
+        padding: 10px;
+    }
+
+    .form1 {
+        width: 600px;
+        margin: 20px auto;
+
+        ::v-deep .el-form-item__content {
+            text-align: left;
+        }
+    }
+}

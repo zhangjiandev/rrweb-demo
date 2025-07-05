@@ -22,9 +22,9 @@
             <p>你的浏览器不支持Canvas</p>
           </canvas>
           <!--              <iframe id="iframe2d" width="300" height="200" src="/draw2d.html"></iframe>-->
-                        <iframe id="iframe2d" width="600" height="500" src="/draw2dnew.html"></iframe>
-          <div id="pdf-container"></div>
-          <img src="duck.jpeg" test="1"/>
+<!--                        <iframe id="iframe2d" width="600" height="500" src="/draw2dnew.html"></iframe>-->
+<!--          <div id="pdf-container"></div>-->
+<!--          <img src="duck.jpeg" test="1"/>-->
           <el-form-item label="活动区域" prop="region">
             <el-select v-model="form.region" placeholder="请选择活动区域">
               <el-option label="区域一" value="shanghai"></el-option>
@@ -64,13 +64,15 @@
           <!--                        <el-radio label="线下场地免费"></el-radio>-->
           <!--                    </el-radio-group>-->
           <!--                </el-form-item>-->
-          <!--                <el-form-item label="活动形式" prop="desc">-->
-          <!--                    <el-input type="textarea" v-model="form.desc"></el-input>-->
-          <!--                </el-form-item>-->
+                          <el-form-item label="活动形式" prop="desc">
+                              <el-input type="textarea" v-model="form.desc"></el-input>
+                          </el-form-item>
           <!--                <el-form-item>-->
           <!--                    <el-button type="primary" @click="onSubmit">打印表单数据</el-button>-->
           <!--                    <el-button type="danger" @click="logError">手动抛错</el-button>-->
           <!--                </el-form-item>-->
+          <img :class="showA ? 'RiskFactor:jobType:1' : 'RiskFactor:jobType:0'" v-show="showA" @click="toggle" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAYAAACohjseAAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAOKADAAQAAAABAAAAOAAAAAANV2hTAAACJklEQVRoBe2bv0oDQRDGZ/cSGwOCnSC+gKCvIBaCtXJgEYgQC9FCUvgQFmphsEgggRTKobVgEXwFBV9AAnaCcDYmd+vO5ZKsF8m2s+dckczuTeD75nd/mi8CMke7fbfaV4OqULClAFYAVCnTQmwpQgHwpgQ8FkWhWansvpoC9bnhEQTB3OdXdA4KDvWOHO079h2DgOuFea/m+/43ak8MpuYetLlNxwz9LVdAV5vcRpMJqZRcPsyhZQ0q8aRLkdxzcf9F1+Zl2fOkPC16hadyeecdf0P16HTul/rRYCOK4zOtcdnQGRdlcU00WrcXoNSJcaInSt561fc/jD3yZTMIFlUYPWuhE5NCXEp8WprqkZxr5lA/akbtphf0Joevgsk2XpaTlVtVVjt60/fd7/cc9Xtu1sintauS+WCZ9Vtnz7FBZ9GlwpkgEyQ+Ab5EiQOyymOC1hERb2CCxAFZ5TFB64iINzBB4oCs8pigdUTEG5ggcUBWeUzQOiLiDUyQOCCrPCZoHRHxBiZIHJBVHhO0joh4AxMkDsgqjwlaR0S8gQkSB2SVxwStIyLe8B8IitCEgNkvc+1SPa1dhBLDpKYJDLaZa5fqrHb0JjEpa5rA1B4G28w9F2rUnCYOx3LRW/7jlGi30bq50iHSo7H1PBQC6gf7e8fJUxQzzjrc3M2Dr8TDMNJcwzoxiNlmzDhrk3W9FydNbn5gKL0+ymujhXHqfuQnb38r+AF+AbH0nYzk8wAAAABJRU5ErkJggg==" >
+          <img v-show="!showA" @click="toggle" src="data:image/png;base64,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" >
         </el-form>
       </div>
     </div>
@@ -120,6 +122,7 @@ export default Vue.extend({
     return {
       eventsMatrix: [[]],  // 使用二维数组来存放多个 event 数组
       showReplay: false,
+      showA: true,
       form: {
         name: '123123123',
         // region: '',
@@ -173,6 +176,9 @@ export default Vue.extend({
     }
   },
   methods: {
+    toggle() {
+      this.showA = !this.showA;
+    },
     onSubmit() {
       //rrweb.takeFullSnapshot(false);
       console.log(JSON.stringify(this.form))
@@ -190,6 +196,8 @@ export default Vue.extend({
        resourceServer: 'https://ys1.8268805.club/resources-api', // 替代图片下载服务地址
        systemCode: "5764", // 系统代码 填写集成时提供的数字
        pageVersion: "1.2",
+       comCode: "12345", // 出单机构 新增
+       productId: "1234567890", // 产品ID 新增
        inlineStylesheet: false,
        recordCanvas: true,
        blockFiltersOptions: 'link[rel="preload"]',
@@ -212,23 +220,23 @@ export default Vue.extend({
        // workerScriptUrl:"../../js/mm-worker.min.js"
        });
 
-      // this.mmRecord.init(
-      //     function () {
-      //       self.mmRecord.startVideo(function (res) {
-      //       }, function () {
-      //       });
-      //     },
-      //     function (error) {
-      //       console.log(error);
-      //     },
-      //     //self.$route.query.managerId,
-      //     //self.$route.query.managerId,
-      //     '12345dsafsd5f4a6f4f5a6s4df56ds4f'
-      // );
+      this.mmRecord.init(
+          function () {
+            self.mmRecord.startVideo(function (res) {
+            }, function () {
+            });
+          },
+          function (error) {
+            console.log(error);
+          },
+          //self.$route.query.managerId,
+          //self.$route.query.managerId,
+          '12345dsafsd5f4a6f4f5a6s4df56ds4f'
+      );
 
-      self.mmRecord.startVideo(function (res) {
-      }, function () {
-      });
+      // self.mmRecord.startVideo(function (res) {
+      // }, function () {
+      // });
 
       //const queue = new SafeIndexedDBQueue<any>("rrweb-events");
 

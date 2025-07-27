@@ -1,6 +1,9 @@
 <template>
   <div class="main">
     <div class="interaction txr-block">
+      <router-link :to="{ path: '/other', query: { managerId: managerId } }">
+        ➡ Go to Other Page
+      </router-link>
       <el-button v-if="!showReplay" type="primary" @click="record">录制</el-button>
       <el-button v-if="!showReplay" type="primary" @click="drawCanvas2D">draw</el-button>
       <el-button v-if="!showReplay" type="primary" @click="jump">jump</el-button>
@@ -81,6 +84,7 @@ import Vue from 'vue';
 //const rrweb = require("rrweb")
 //import rrweb from 'rrweb'
 import {record} from "rrweb";
+import * as rrweb from 'rrweb';
 //const mm = require("magic-mirror")
 //import * as mm from 'magic-mirror'
 //import VideoRecorder from 'magic-mirror'
@@ -279,7 +283,7 @@ export default Vue.extend({
           });
         }
       }
-      recorderStopFn = record({
+      recorderStopFn = rrweb.record({
         //checkoutEveryNth: 100, // 每 100 个 event 重新制作快照
         emit(event, isCheckout) {
           // snapshot 类型事件 & node 来源
@@ -335,6 +339,10 @@ export default Vue.extend({
         //     logger: window.console,
         // })],
       });
+      // 加一个自定义事件示例（比如 2 秒后）
+      setTimeout(() => {
+        rrweb.record.addCustomEvent('my-tag', { message: '你好，这是自定义事件' });
+      }, 2000);
 
       // window.addEventListener('message', function(event) {
       //   if (event.data.type === 'iframeEvent') {
@@ -345,6 +353,31 @@ export default Vue.extend({
       // }, false);
     },
     replay() {
+
+      const watermarkText = '中国人寿财险 chinalife-p.com.cn';
+
+      const svgStr = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="300" height="150">
+          <text x="0" y="140" fill="rgba(0,0,0,0.1)" font-size="16" transform="rotate(-30 20 40)">
+            ${watermarkText}
+          </text>
+        </svg>
+      `;
+
+      const svgBase64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgStr)));
+
+      const watermark = document.createElement('div');
+      watermark.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: calc(100% - 60px);
+        pointer-events: none;
+        background-image: url('${svgBase64}');
+        background-repeat: repeat;
+        z-index: 10;
+      `;
 
       // 创建一个显示时间戳的元素
       const timestampOverlay = document.createElement('div');
@@ -357,13 +390,15 @@ export default Vue.extend({
       timestampOverlay.style.fontFamily = 'monospace';
       timestampOverlay.style.zIndex = '9999';
       timestampOverlay.textContent = 'Timestamp: --';
-      document.body.appendChild(timestampOverlay);
+      const replayerElement = this.$refs.replayer as HTMLElement
+      replayerElement.appendChild(timestampOverlay);
+      replayerElement.appendChild(watermark);
       //console.log('11111111111111111')
       console.log('最近的操作记录: ', JSON.stringify(this.eventsMatrix[this.eventsMatrix.length - 1]));
-      if (this.eventsMatrix[this.eventsMatrix.length - 1].length <= 0) return this.$message.error("请先点击录制按钮进行录制！");
+      //if (this.eventsMatrix[this.eventsMatrix.length - 1].length <= 0) return this.$message.error("请先点击录制按钮进行录制！");
 
       //this.stopFn();
-      recorderStopFn();
+      //recorderStopFn();
       if (flushTimer) {
         console.log("关闭定时任务！")
         clearInterval(flushTimer);
@@ -374,15 +409,36 @@ export default Vue.extend({
       //   flushQueueToServiceWorker(queue);
       // }
       //sw <--|
+
+      const myCustomEvent = {
+        type: 5, // rrweb 的 custom 类型
+        timestamp: 1751631938701, // 合理的时间戳
+        data: {
+          tag: '风险信息',
+          payload: {
+            message: 'Hello, this is my custom event!',
+            id: 138
+          },
+        },
+      };
+      events.push(myCustomEvent);
+      // 按 timestamp 排序，以确保回放顺序正确
+      events.sort((a, b) => a.timestamp - b.timestamp);
+
       this.showReplay = true
+
       const player = new rrwebPlayer({
         target: this.$refs.replayer as HTMLElement, // 可以自定义 DOM 元素
         // 配置项
         props: {
           //logConfig: true,
-          events: this.eventsMatrix[this.eventsMatrix.length - 1],
+          //events: this.eventsMatrix[this.eventsMatrix.length - 1],
+          events : events,
           UNSAFE_replayCanvas: true,
-          mouseTail: false
+          mouseTail: false,
+          tags: {
+            '风险信息': '#21e676'
+          }
           // plugins: [
           //     rrweb.getReplayConsolePlugin({
           //     level: ['info', 'log', 'warn', 'error'],
@@ -390,6 +446,23 @@ export default Vue.extend({
           // ],
         },
       });
+
+      //player.getMirror().getNode(138);
+      function highlightNode(replayer, nodeId, color = 'red') {
+        const node = replayer.getMirror().getNode(nodeId);
+        if (!node) {
+          console.warn('Node not found:', nodeId);
+          return;
+        }
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          node.style.outline = `4px solid ${color}`;
+          // setTimeout(() => {
+          //   node.style.outline = '';
+          // }, 2000);
+        } else {
+          console.warn('Node not found or not HTMLElement:', node);
+        }
+      }
 
       function formatTimestamp(timestamp: number) {
         var date = new Date(timestamp);
@@ -418,6 +491,11 @@ export default Vue.extend({
           const time = formatTimestamp(e.timestamp);//new Date(event.timestamp).toLocaleTimeString();
           timestampOverlay.textContent = `时间: ${time}`;
         }
+      });
+      replayer.on('custom-event', (event) => {
+        console.log(event.data.payload.message);
+        highlightNode(replayer, event.data.payload.id, 'red')
+        //timestampOverlay.textContent = '时间: --'; // 重置时间戳
       });
       replayer.play();
     },

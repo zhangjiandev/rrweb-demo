@@ -2,7 +2,7 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 
-import IndexPage from '@/views/index.vue'
+import IndexMm from '@/views/index-rrweb.vue'
 import OtherPage from '@/views/other.vue'
 
 Vue.use(VueRouter)
@@ -11,7 +11,7 @@ const routes: Array<RouteConfig> = [
     {
         path: '/',
         name: 'Index',
-        component: IndexPage,
+        component: IndexMm,
     },
     {
         path: '/other',
